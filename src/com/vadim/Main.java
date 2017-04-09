@@ -15,7 +15,7 @@ public class Main {
 
         TextGenerator textGenerator = new TextGenerator();
         for (int i = 0; i < 10; i++){
-            String fileName = "files/file" + i;
+            String fileName = "file" + i;
             textGenerator.start(fileName);
         }
 
