@@ -16,25 +16,9 @@ public class WordReader implements Runnable {
         this.reader = reader;
     }
 
-    public String nextWord() throws IncorrectCharException {
-        String s = "";
-        int c;
-        try {
-            while ((c = reader.read()) != -1) {
-                if (isForbiddenChar(c)) {
-                    throw new IncorrectCharException(c);
-                } else if (c == 0x20 && s.length() > 0)
-                    return s;
-                else if (c!=0x20)
-                    s += (char) c;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return s;
-    }
 
-    public String nextWord2() throws  IncorrectCharException{
+
+    public String nextWord() throws  IncorrectCharException{
         String s = "";
         try {
             int c;
@@ -56,19 +40,11 @@ public class WordReader implements Runnable {
         return "";
     }
     private boolean isAllowableChar(int c){
-        if (c >= 0x410 && c < 0x450)//кириллица
+        if ((c >= 0x410 && c < 0x450) || c == 0x451 || c == 0x401)//кириллица
             return true;
         if (c > 0x20 && c < 0x40)
             return true;
         return false;
-    }
-
-    private boolean isForbiddenChar(int c){
-        if (c >= 0x410 && c < 0x450)//кириллица
-            return false;
-        if (c >= 0 && c < 0x40)
-            return false;
-        return true;
     }
 
     private boolean isIgnoredChar(int c){

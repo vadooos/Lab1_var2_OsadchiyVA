@@ -15,21 +15,23 @@ public class ReadingThread implements Runnable {
     private final Reader reader;
     static CopyOnWriteArraySet<String> wordsSet = new CopyOnWriteArraySet<>();
     static volatile boolean abortThreads = false;
+    static volatile int readFiles = 0;
 
     public ReadingThread(Reader reader, String resourceCaption) {
         this.reader = reader;
         this.resourceCaption = resourceCaption;
+        readFiles += 1;
     }
 
     @Override
     public void run() {
-        WordReader wordReader = null;
+        WordReader wordReader;
         t:
         try {
             wordReader = new WordReader(reader);
             String word = "";
             System.out.printf("Чтение ресурса: %s...\r\n", resourceCaption);
-            while ((word = wordReader.nextWord2()) != "") {
+            while ((word = wordReader.nextWord()) != "") {
                 if (abortThreads){
                     System.out.printf("Чтение ресурса %s прервано\r\n", resourceCaption);
                     break t;
@@ -41,6 +43,8 @@ public class ReadingThread implements Runnable {
             }
 
             System.out.printf("Ресурс %s прочитан до конца\r\n", resourceCaption);
+            if (--readFiles == 0)
+                System.out.println("Все файла прочитаны, повторений не найдено!");
 
         } catch (IncorrectCharException | DublicateWordException e){
             abortThreads = true;
